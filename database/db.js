@@ -12,5 +12,8 @@ connection.authenticate()
   .then(() =>console.log('Connection established to DB.'))
   .catch(err =>console.error('Unable to connect to DB:', err));
 
-module.exports=connection;
+module.exports={
+  connection:connection,
+  Sequelize:Sequelize
+}
 
