@@ -1,9 +1,6 @@
 const router=require('express').Router();
-const passport=require('passport');
-
-router.get('/',(req,res)=>{
-    res.send('this is our auth wala page');
-    });
+const passport=require('passport')
+router.get('/',(req,res)=>res.render('home.ejs'));
 router.get('/login',(req,res)=>{
 res.render('login.ejs');
 });
@@ -11,7 +8,8 @@ res.render('login.ejs');
 //auth logout
 router.get('/logout',(req,res)=>{
 //handle with passport
-res.send('logging out');
+req.logout();
+res.redirect('/')
 });
 
 //auth with google:
@@ -23,7 +21,8 @@ router.get('/google',passport.authenticate("google",{
 
 //calback route for google to redirect to 
 router.get('/google/redirect',passport.authenticate("google"), (req,res)=>{
-    res.send((req.user)[0].firstName)
+    console.log('Google Redirected us');
+    res.redirect('/profiles');
 });
 
 module.exports=router

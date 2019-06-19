@@ -7,8 +7,10 @@ const path=require('path');
 const express= require('express');
 const app= express();
 const bodyParser = require('body-parser');
+app.use(bodyParser.json());//to parse incoming string from http into a json object
 const users=require('../../routes/users.js');
-const tasks=require('../../routes/tasks.js');
+//const tasks=require('../../routes/tasks.js');
+const profiles=require('../../routes/profile-route');
 const authRoutes=require('../../routes/auth-route');
 //setting up cookie session
 const passport=require('passport')
@@ -20,20 +22,16 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.use(bodyParser.json());//to parse incoming string from http into a json object
-app.use('/auth',authRoutes);//for redirecting our auth routes
+app.use('/auth',authRoutes);
 app.use('/users',users);
-app.use('/tasks',tasks); 
+//app.use('/tasks',tasks); 
+app.use('/profiles',profiles); 
 app.use(express.static('static'));//specify where to look for static files that are searched by browser like stylesheet
 app.set('viewengine','ejs');//setting up view engine
 
 app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,"..","pages",'index.html'))
-});
-
-app.get('/rendertemplate',(req,res)=>{
-    res.render('home.ejs');
+    res.render('home.ejs',{user:req.user});
+    //res.sendFile(path.join(__dirname,"..","pages",'index.html'))
 });
 
 app.listen((process.env.port || 3000),

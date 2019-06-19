@@ -38,10 +38,15 @@ firstName:{
                 }
             }
 },
+
 googleID:{
     type:Sequelize.STRING(),
     allowNull:true,
     unique:true,
+}, 
+ thumbnail:{
+    type:Sequelize.STRING(100),
+    allowNull:true
 }
 });
 User.sync({force: false}).then(()=>console.log(`table created`));

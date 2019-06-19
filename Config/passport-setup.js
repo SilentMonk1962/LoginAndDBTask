@@ -1,19 +1,18 @@
 const User=require('../models/users.js');
-
-
-
 require('dotenv').config();
 const passport=require('passport');
 const GoogleStrategy=require('passport-google-oauth20');
 
 
 passport.serializeUser((user,done)=>{
-    done(null, user);
+    done(null, user.id);
 });
 
 passport.deserializeUser((id,done)=>{
     User.findOne({where:{id: id}})
-    .then((user)=>{done(null,user)})});
+    .then((user)=>{done(null,user)})
+    .catch(e=>console.log(e));
+});
 
 //google strategy is a constructor function helping to create a new object
     passport.use(
@@ -23,9 +22,9 @@ passport.deserializeUser((id,done)=>{
             clientSecret: process.env.GooglePlus_Api_SecretCode,
             callbackURL: '/auth/google/redirect'
         }, (accessToken, refreshToken, profile, done) => {
-            //console.log(profile);
+            console.log(profile);
             //if google id is already there in our db then don't add. 
-            User.findAll({
+            User.findOne({
                 where: {
                   googleID:profile.id
                 }
@@ -38,6 +37,7 @@ passport.deserializeUser((id,done)=>{
                         googleID:profile.id,
                         firstName:profile.name.givenName,
                         lastName:profile.name.familyName,
+                        thumbnail:profile._json.picture
                     }).then((newUser)=>{
                         console.log(`created new user:`,newUser)
                         done(null, newUser);
